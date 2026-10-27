@@ -1,1 +1,1 @@
-# Real-time-Delivery-Intelligence-RTDI-
+# Real-time Delivery Intelligence - RTDI
