@@ -1,3 +1,7 @@
+# DISCLAIMER:
+# since I'm using dummy data for this project, the passwords are hard-coded
+# use .env file to store secrets and keys and use docker compose variables to pass them onto the containers.
+
 services:
   postgres:
     image: postgres:16-alpine
