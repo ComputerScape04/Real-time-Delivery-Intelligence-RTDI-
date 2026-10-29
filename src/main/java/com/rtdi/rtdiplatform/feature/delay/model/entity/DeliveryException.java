@@ -23,8 +23,9 @@ public class DeliveryException {
     @Column(name = "shipment_id", nullable = false)
     private UUID shipmentId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "exception_type", nullable = false, length = 64)
-    private String exceptionType;
+    private DeliveryExceptionType exceptionType;
 
     @Column(name = "reason")
     private String reason;

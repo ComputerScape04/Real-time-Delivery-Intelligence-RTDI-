@@ -25,7 +25,7 @@ public class Shipment {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 32)
-    private String status;
+    private ShipmentStatus status;
 
     @Column(name = "origin", nullable = false, length = 255)
     private String origin;

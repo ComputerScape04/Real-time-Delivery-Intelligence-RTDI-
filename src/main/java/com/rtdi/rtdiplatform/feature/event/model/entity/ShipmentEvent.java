@@ -27,8 +27,9 @@ public class ShipmentEvent {
     @Column(name = "shipment_id", nullable = false)
     private UUID shipmentId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "event_type", nullable = false, length = 64)
-    private String eventType;
+    private ShipmentEventType eventType;
 
     @Column(name = "carrier", nullable = false, length = 64)
     private String carrier;
