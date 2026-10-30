@@ -14,12 +14,12 @@ import java.util.UUID;
 
 public interface ShipmentRepository extends JpaRepository<Shipment, UUID> {
 
-    Optional<Shipment> findByTrackingNumber(String trackingNumber);
+    Optional<Shipment> findByTrackingNo(String trackingNumber);
 
     Page<Shipment> findByStatus(ShipmentStatus status, Pageable pageable);
 
     // checking for duplicates and discarding them
-    boolean existsByTrackingNumber(String trackingNumber);
+    boolean existsByTrackingNo(String trackingNumber);
 
     // delayed shipments
     List<Shipment> findByStatusNotInAndExpectedDeliveryAtBefore(Collection<ShipmentStatus> shipmentStatuses, Instant cutoff);
