@@ -1,5 +1,7 @@
 package com.rtdi.rtdiplatform.feature.shipment.service;
 
+import com.rtdi.rtdiplatform.core.exception.ResourceNotFoundErrorMessages;
+import com.rtdi.rtdiplatform.core.exception.ResourceNotFoundException;
 import com.rtdi.rtdiplatform.feature.shipment.model.dto.CreateShipmentRequest;
 import com.rtdi.rtdiplatform.feature.shipment.model.dto.ShipmentResponse;
 import com.rtdi.rtdiplatform.feature.shipment.model.dto.UpdateShipmentRequest;
@@ -49,20 +51,15 @@ public class ShipmentService {
 
     @Transactional
     public ShipmentResponse updateShipment(UpdateShipmentRequest updateShipmentRequest) {
-        Optional<Shipment> shipment = shipmentRepository.findByTrackingNo(updateShipmentRequest.trackingNo());
+        Shipment shipment = shipmentRepository.findByTrackingNo(updateShipmentRequest.trackingNo())
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceNotFoundErrorMessages.SHIPMENT_NOT_FOUND));
 
-        if (shipment.isPresent()) {
-            Shipment shipmentToUpdate = shipment.get();
-        } else {
-            throw new RuntimeException("Shipment not found");
-        }
+        shipment.setOrigin(updateShipmentRequest.origin());
+        shipment.setDestination(updateShipmentRequest.destination());
+        shipment.setExpectedDeliveryAt(updateShipmentRequest.expectedDeliveryAt());
 
-        shipment.get().setOrigin(updateShipmentRequest.origin());
-        shipment.get().setDestination(updateShipmentRequest.destination());
-        shipment.get().setExpectedDeliveryAt(updateShipmentRequest.expectedDeliveryAt());
-        shipmentRepository.save(shipment.get());
-
-        return ShipmentResponse.from(shipment.get());
+        Shipment saved = shipmentRepository.save(shipment);
+        return ShipmentResponse.from(saved);
     }
 
     @Transactional
@@ -70,8 +67,16 @@ public class ShipmentService {
 
         Shipment shipment = shipmentRepository
                 .findByTrackingNo(trackingNo)
-                .orElseThrow(() -> new RuntimeException("Shipment not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceNotFoundErrorMessages.SHIPMENT_NOT_FOUND));
 
         shipmentRepository.delete(shipment);
+    }
+
+    @Transactional(readOnly = true)
+    public ShipmentResponse getShipmentByTrackingNo(String trackingNo) {
+        Shipment shipment = shipmentRepository.findByTrackingNo(trackingNo)
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceNotFoundErrorMessages.SHIPMENT_NOT_FOUND));
+
+        return ShipmentResponse.from(shipment);
     }
 }

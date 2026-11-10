@@ -36,12 +36,21 @@ public class ShipmentController {
                 .body(response);
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteShipment(@Valid @RequestBody String trackingNumber) {
+    @DeleteMapping("/{trackingNumber}")
+    public ResponseEntity<String> deleteShipment(@Valid @PathVariable String trackingNumber) {
         shipmentService.deleteShipment(trackingNumber);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body("Shipment has been deleted successfully");
+    }
+
+    @GetMapping("/{trackingNumber}")
+    public ResponseEntity<ShipmentResponse> getShipment(@Valid @PathVariable String trackingNumber) {
+        ShipmentResponse response = shipmentService.getShipmentByTrackingNo(trackingNumber);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }
