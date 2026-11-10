@@ -2,12 +2,15 @@ package com.rtdi.rtdiplatform.feature.shipment.service;
 
 import com.rtdi.rtdiplatform.feature.shipment.model.dto.CreateShipmentRequest;
 import com.rtdi.rtdiplatform.feature.shipment.model.dto.ShipmentResponse;
+import com.rtdi.rtdiplatform.feature.shipment.model.dto.UpdateShipmentRequest;
 import com.rtdi.rtdiplatform.feature.shipment.model.entity.Shipment;
 import com.rtdi.rtdiplatform.feature.shipment.model.entity.ShipmentStatus;
 import com.rtdi.rtdiplatform.feature.shipment.repository.ShipmentRepository;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,5 +45,33 @@ public class ShipmentService {
         Shipment saved = shipmentRepository.save(shipment);
 
         return ShipmentResponse.from(saved);
+    }
+
+    @Transactional
+    public ShipmentResponse updateShipment(UpdateShipmentRequest updateShipmentRequest) {
+        Optional<Shipment> shipment = shipmentRepository.findByTrackingNo(updateShipmentRequest.trackingNo());
+
+        if (shipment.isPresent()) {
+            Shipment shipmentToUpdate = shipment.get();
+        } else {
+            throw new RuntimeException("Shipment not found");
+        }
+
+        shipment.get().setOrigin(updateShipmentRequest.origin());
+        shipment.get().setDestination(updateShipmentRequest.destination());
+        shipment.get().setExpectedDeliveryAt(updateShipmentRequest.expectedDeliveryAt());
+        shipmentRepository.save(shipment.get());
+
+        return ShipmentResponse.from(shipment.get());
+    }
+
+    @Transactional
+    public void deleteShipment(String trackingNo) {
+
+        Shipment shipment = shipmentRepository
+                .findByTrackingNo(trackingNo)
+                .orElseThrow(() -> new RuntimeException("Shipment not found"));
+
+        shipmentRepository.delete(shipment);
     }
 }

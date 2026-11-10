@@ -23,4 +23,5 @@ public interface ShipmentRepository extends JpaRepository<Shipment, UUID> {
 
     // delayed shipments
     List<Shipment> findByStatusNotInAndExpectedDeliveryAtBefore(Collection<ShipmentStatus> shipmentStatuses, Instant cutoff);
+
 }
